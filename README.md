@@ -1,6 +1,6 @@
-# EmergenceAI
+# EmergencIA
 
-## PARA EJECUTARLO CORRAN:
+## PARA EJECUTARLO CORRER:
 ```python manage.py runserver```
 
 Reto para Thales, HackMx5
