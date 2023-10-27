@@ -1,5 +1,8 @@
+Django
 django
+deepgram-sdk
 python-decouple
 aiohttp
-deepgram-sdk
+python-dotenv
 channels
+deepgram-sdk
