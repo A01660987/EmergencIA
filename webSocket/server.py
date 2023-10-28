@@ -116,7 +116,10 @@ async def audio_handler(websocket, path):
 
 async def run_server():
     port = 5000
-    server = await websockets.serve(audio_handler, "localhost", port)
+    try:
+        server = await websockets.serve(audio_handler, "localhost", port)
+    except:
+        server = await websockets.serve(audio_handler, "https://emergencia-hackmx.azurewebsites.net/", port)
     print(f"Server is now listening for new connections on port {port}")
     await server.wait_closed()
 
