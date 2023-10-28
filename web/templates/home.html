@@ -100,13 +100,24 @@
 
                     const socket = new WebSocket('ws://localhost:8000/listen');
 
-                    mediaRecorder.addEventListener('dataavailable', async (event) => {
-                        if (event.data.size > 0 && socket.readyState == 1) {
-                            socket.send(event.data);
-                        }
-                    });
+                    socket.onopen = () => {
+                        document.querySelector('#status').textContent = 'Recording...';
+                        console.log({ event: 'onopen' });
+                        mediaRecorder.addEventListener('dataavailable', async (event) => {
+                            if (event.data.size > 0 && socket.readyState == 1) {
+                                socket.send(event.data);
+                            }
+                        });
+                        mediaRecorder.start(250);
+                    };
 
-                    mediaRecorder.start(250);
+                    socket.onmessage = (message) => {
+                        const received = message.data;
+                        if (received) {
+                            console.log(received);
+                            document.querySelector('#transcript').textContent += ' ' + received;
+                        }
+                    };
 
                     mediaRecorder.onstop = () => {
                         socket.close();
