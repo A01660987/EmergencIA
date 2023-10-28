@@ -15,6 +15,10 @@ openai.api_key = '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'
 
 
 def home(request):
+    if request.method == 'POST': 
+        fullMessage = request.POST.get('fullMessage') 
+        response = get_completion(fullMessage) 
+        return JsonResponse({'response': response})
     return render(request, "home.html")
 
 def record(request):
@@ -35,7 +39,6 @@ def process_audio(request):
 
 
 def get_completion(prompt): 
-	print(prompt) 
 	response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
     messages=[

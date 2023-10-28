@@ -104,6 +104,7 @@
                             fullMessage += received;
                             if (Math.floor(inicio / 1000) + 10 < Math.floor(Date.now() / 1000)) {
                                 inicio = Date.now();
+                                
                                 var csrf_token = Cookies.get('csrftoken');
                                 $.ajaxSetup({
                                     headers: { "X-CSRFToken": csrf_token }
