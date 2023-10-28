@@ -23,6 +23,7 @@ def home(request):
 def record(request):
     return render(request, "record.html")
 
+@csrf_exempt
 def process_audio(request):
     uploaded_file = request.FILES['audio_file']
     # Save the uploaded file temporarily
@@ -36,7 +37,7 @@ def process_audio(request):
     # Return the processed results as JSON
     return JsonResponse(processed_results)
 
-
+@csrf_exempt
 def get_completion(prompt): 
 	response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
@@ -50,7 +51,7 @@ def get_completion(prompt):
 	response = response.choices[0].message.content  
 	return response
 
-
+@csrf_exempt
 def query_view(request): 
 	if request.method == 'POST': 
 		prompt = request.POST.get('prompt') 
