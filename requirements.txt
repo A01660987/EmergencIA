@@ -13,3 +13,4 @@ typing
 tqdm
 langchain
 wget
+ajax
