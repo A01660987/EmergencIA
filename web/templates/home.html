@@ -40,7 +40,28 @@
         <div class="row mt-4 mx-4">
             <div class="col-7">
                 <div class="mb-4">
-                    <p id="status">Connection status:</p>
+                    <div class="container mt-4">
+                        <!-- First Row -->
+                        <div class="row mb-2">
+                            <div class="col">
+                                <img class="img-record" src="../static/png/rec-button.png" alt="Record Button">
+                            </div>
+                        </div>
+                        
+                        <!-- Second Row -->
+                        <div class="row">
+                            <div class="col">
+                                <button id="startButton" class="btn btn-primary">Start WebSocket</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Third Row -->
+                        <div class="row">
+                            <div class="col">
+                                <p class="intermittent-text" id="status">Not recording.</p>
+                            </div>
+                        </div>
+                    </div>                    
                 </div>
                 <div class="px-4 pt-3 pb-5 bg-white rounded mb-4">
                     <p class="fs-6 mb-0 fw-bold">
@@ -63,46 +84,63 @@
             </div>
         <!-- JAVASCRIPT FILES -->
         <script>
-            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-             if (!MediaRecorder.isTypeSupported('audio/webm'))
-                 return alert('Browser not supported')
- 
-             const mediaRecorder = new MediaRecorder(stream, {
-                 mimeType: 'audio/webm',
-             })
- 
-             const socket = new WebSocket('ws://localhost:8000/listen')
- 
-             socket.onopen = () => {
-                 document.querySelector('#status').textContent = 'Connected'
-                 console.log({ event: 'onopen' })
-                 mediaRecorder.addEventListener('dataavailable', async (event) => {
-                     if (event.data.size > 0 && socket.readyState == 1) {
-                         socket.send(event.data)
-                     }
-             })
-             mediaRecorder.start(250)
-             }
- 
-             socket.onmessage = (message) => {
-                 const received = message.data
-                 if (received) {
-                     console.log(received)
-                     document.querySelector('#transcript').textContent += ' ' + received
-                 }
+            const startButton = document.getElementById('startButton');
+            let mediaRecorder;
+            let isRecording = false;
+
+            function startRecording() {
+                navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                    if (!MediaRecorder.isTypeSupported('audio/webm')) {
+                        return alert('Browser not supported');
+                    }
+
+                    mediaRecorder = new MediaRecorder(stream, {
+                        mimeType: 'audio/webm',
+                    });
+
+                    const socket = new WebSocket('ws://localhost:8000/listen');
+
+                    mediaRecorder.addEventListener('dataavailable', async (event) => {
+                        if (event.data.size > 0 && socket.readyState == 1) {
+                            socket.send(event.data);
+                        }
+                    });
+
+                    mediaRecorder.start(250);
+
+                    mediaRecorder.onstop = () => {
+                        socket.close();
+                        isRecording = false;
+                        startButton.textContent = 'Start WebSocket';
+                    };
+
+                    mediaRecorder.onerror = (error) => {
+                        console.error('Error: ', error);
+                    };
+
+                    startButton.classList.add('recordingStarted');
+                    startButton.textContent = 'Stop WebSocket';
+                    isRecording = true;
+                }).catch((error) => {
+                    console.error('Error accessing microphone: ', error);
+                });
             }
- 
-            socket.onclose = () => {
-             console.log({ event: 'onclose' })
-         }
- 
-             socket.onerror = (error) => {
-                 console.log({ event: 'onerror', error })
-             }
- 
-            })
- 
-         </script>
+
+            function stopRecording() {
+                if (mediaRecorder && isRecording) {
+                    mediaRecorder.stop();
+                }
+            }
+
+            startButton.addEventListener('click', () => {
+                if (!isRecording) {
+                    startRecording();
+                } else {
+                    stopRecording();
+                }
+            });
+
+        </script>
     <!-- <script>
         navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
             const mediaRecorder = new MediaRecorder(stream)
