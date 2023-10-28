@@ -24,6 +24,3 @@ application = ProtocolTypeRouter({
        )
    ),
 })
-
-
-ASGI_APPLICATION = 'EmergencIA.asgi.application'
