@@ -10,8 +10,7 @@ import json
 from decouple import config
 
 load_dotenv()
-# openai.api_key = config("OPENAI_API_KEY")
-openai.api_key = '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'
+openai.api_key = config("OPENAI_API_KEY")
 
 
 def home(request):

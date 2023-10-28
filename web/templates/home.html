@@ -108,6 +108,7 @@
                         if (received) {
                             document.querySelector('#transcript').textContent += ' ' + received;
                             fullMessage += received;
+                            $('#tiempo_de_servicio').text(Date(Date.now()).toString());
                             if (Math.floor(inicio / 1000) + 5 < Math.floor(Date.now() / 1000)) {
                                 inicio = Date.now();
                                 
@@ -122,13 +123,12 @@
                                     dataType:'json',
                                     success:function(data) {
                                         var dataJson = JSON.parse(data.response)
-                                        $('#servicios').text('<p>' + dataJson["servicios_a_enviar"] + '</p>'); 
-                                        $('#nombre').text('<p>' + dataJson["nombre"] + '</p>'); 
-                                        $('#telefono').text('<p>' + dataJson["telefono"] + '</p>'); 
-                                        $('#ubicacion').text('<p>' + dataJson["ubicacion"] + '</p>'); 
-                                        $('#tiempo_de_servicio').text('<p>' + Date.now() + '</p>'); 
-                                        $('#razones').text('<p>' + dataJson["razones_de_emergencia"] + '</p>');
-                                        // $('#servicios').text('<p>('+ time + ') <i class="bi bi-robot"></i>: ' + data.response["servicios_a_enviar"] + '</p>'); 
+                                        $('#servicios').text(dataJson["servicios_a_enviar"]); 
+                                        $('#nombre').text(dataJson["nombre"]); 
+                                        $('#telefono').text(dataJson["telefono"]); 
+                                        $('#ubicacion').text(dataJson["ubicacion"]); 
+                                        $('#razones').text(dataJson["razones_de_emergencia"]);
+                                        // $('#servicios').text(time <i class="bi bi-robot"></i>: ' + data.response["servicios_a_enviar"]); 
                                     }
                                 })
                             }
