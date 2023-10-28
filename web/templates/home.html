@@ -92,7 +92,7 @@
                     try {
                         const socket = new WebSocket('ws://localhost:8000/listen');
                     } catch (error) {
-                        const socket = new WebSocket('ws://emergencia-hackmx.azurewebsites.net/listen')
+                        const socket = new WebSocket('ws://emergencia-hackmx.azurewebsites.net/listen');
                     }
                     socket.onopen = () => {
                         inicio = Date.now();
