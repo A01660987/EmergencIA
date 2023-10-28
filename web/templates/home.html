@@ -36,7 +36,7 @@
             <img src="{% static 'svg/logo_red.svg' %}" alt="EmergenceAI" height="50">
         </div>
         <div id="resumen" class="mx-4 my-2 px-4 py-3 rounded text-center text-light" style="background-color: #C10F33">
-            <p class="mb-0 fw-bold">RESUMEN DE SITUACIÓN</p>
+            <p id="razones" class="mb-0 fw-bold">RESUMEN DE SITUACIÓN</p>
             <p class="display-5 fw-normal mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
         </div>
         <div class="row mt-4 mx-4">
@@ -62,8 +62,14 @@
             </div>
             <div class="col-lg-4 col-md-12 my-3 text-center fs-5 fw-semibold">
                 Servicio de emergencia recomendado:
-                <p class="display-3 fw-bold">Ambulancia</p>
+                <p id="servicios" class="display-3 fw-bold"></p>
+                <span class="text-start">Datos del comunicante:</span>
+                <p class="fs-3 mt-2 mb-1">Nombre: <span class="fw-bold" id="nombre"></span></p>
+                <p class="fs-3 mb-1">Teléfono: <span class="fw-bold" id="telefono"></span></p>
+                <p class="fs-3 mb-1">Ubicación: <span class="fw-bold" id="ubicacion"></span></p>
+                <p class="fs-3 mb-1">Tiempo de servicio: <span class="fw-bold" id="tiempo_de_servicio"></span></p>
             </div>
+            
         <!-- JAVASCRIPT FILES -->
         <script>
             const startButton = document.getElementById('startButton');
