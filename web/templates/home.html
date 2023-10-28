@@ -114,8 +114,14 @@
                                     type:'POST',
                                     data:{fullMessage: fullMessage},
                                     dataType:'json',
-                                    success:function(data){
-                                        console.log(data.response);
+                                    success:function(data) {
+                                        $('#servicios').append('<p>' + data.response["servicios_a_enviar"] + '</p>'); 
+                                        $('#nombre').append('<p>' + data.response["nombre"] + '</p>'); 
+                                        $('#telefono').append('<p>' + data.response["telefono"] + '</p>'); 
+                                        $('#ubicacion').append('<p>' + data.response["ubicacion"] + '</p>'); 
+                                        $('#tiempo_de_servicio').append('<p>' + time + '</p>'); 
+                                        $('#razones').append('<p>' + data.response["razones_de_emergencia"] + '</p>');
+                                        // $('#servicios').append('<p>('+ time + ') <i class="bi bi-robot"></i>: ' + data.response["servicios_a_enviar"] + '</p>'); 
                                     }
                                 })
                             }
