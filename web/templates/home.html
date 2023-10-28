@@ -28,11 +28,12 @@
         <div class="row mt-4 mx-4">
             <div class="col-7 p-4 bg-white rounded">
                 <p id="status">Connection status:</p>
-                <p id="transcript" class="fs-6 mb-0 fw-bold">
-                    TRANSCRIPCIÓN
+                <button id="startRecording">Start Recording</button>
+                <button id="stopRecording" disabled>Stop Recording</button>
+                <p class="fs-6 mb-0 fw-bold">
+                  TRANSCRIPCIÓN
                 </p>
-                <p class="fs-5 mb-0">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Arcu risus quis varius quam quisque id diam vel quam. Condimentum lacinia quis vel eros donec ac odio tempor orci. In ornare quam viverra orci sagittis eu volutpat. Fames ac turpis egestas integer eget aliquet. Magnis dis parturient montes nascetur ridiculus mus mauris. Elit duis tristique sollicitudin nibh sit amet. Semper quis lectus nulla at. Viverra justo nec ultrices dui. Imperdiet sed euismod nisi porta lorem. Suspendisse interdum consectetur libero id. Elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi. Malesuada nunc vel risus commodo viverra maecenas accumsan. Tortor dignissim convallis aenean et tortor at risus viverra adipiscing. Maecenas volutpat blandit aliquam etiam. Semper quis lectus nulla at volutpat. Dolor purus non enim praesent elementum facilisis. Lectus vestibulum mattis ullamcorper velit sed. A erat nam at lectus.
+                <p id="transcript" class="fs-5 mb-0">
                 </p>
             </div>
             <div class="col my-3 text-center fs-5 fw-semibold">
@@ -41,8 +42,51 @@
             </div>
         <!-- JAVASCRIPT FILES -->
         <script>
-            const socket = new WebSocket('ws://localhost:8000/listen')
-        </script>
-        <script src="../static/js/audio-record-script.js"></script>
+            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                const mediaRecorder = new MediaRecorder(stream)
+            })
+
+            const socket = new WebSocket('ws://127.0.0.1:8000/listen')
+
+            socket.onopen = () => {
+                document.querySelector('#status').textContent = 'Connected'
+                console.log({
+                    event: 'onopen'
+                })
+                mediaRecorder.addEventListener('dataavailable', async (event) => {
+                    if (event.data.size > 0 && socket.readyState == 1) {
+                        socket.send(event.data)
+                    }
+                })
+                mediaRecorder.start(250)
+            }
+        
+            socket.onmessage = (message) => {
+                const received = message.data
+                if (received) {
+                    console.log(received)
+                    document.querySelector('#transcript').textContent += ' ' + received
+                }
+            }
+        
+            socket.onclose = () => {
+                console.log({
+                    event: 'onclose'
+                })
+            }
+        
+            socket.onerror = (error) => {
+                console.log({
+                    event: 'onerror',
+                    error
+                })
+            }
+    </script>
+    <!-- <script>
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+            const mediaRecorder = new MediaRecorder(stream)
+        })
+    </script> -->
+    <!-- <script src="../static/js/audio-record-script.js"></script> -->
     </body>
 </html>
