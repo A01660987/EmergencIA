@@ -52,15 +52,6 @@
                     <p id="transcript" class="fs-5 mb-0">
                     </p>
                 </div>
-                <form id="audio-upload">
-                    <div class="mb-3">
-                        <form id="audioForm">
-                            <label for="formFile" class="form-label">Carga un archivo de audio (.mp3, .wav)</label>
-                            <input class="form-control mb-3" type="file" id="formFile" accept=".mp3,.wav">
-                            <button type="submit" class="btn btn-danger mb-3" style="border:none" onsubmit="uploadAudioFile()">Cargar</button>
-                        </form>
-                    </div>
-                </form>
             </div>
             <div class="col-lg-4 col-md-12 my-3 text-center fs-5 fw-semibold">
                 Servicio de emergencia recomendado:
@@ -74,36 +65,6 @@
             
         <!-- JAVASCRIPT FILES -->
         <script>
-            function uploadAudioFile() {
-                const fileInput = document.getElementById('formFile');
-                const formData = new FormData();
-                formData.append('audioFile', fileInput.files[0]);
-                
-                var csrftoken = Cookies.get('csrftoken');
-                
-                // set the CSRF token in the AJAX headers 
-                $.ajaxSetup({ 
-                    headers: { 'X-CSRFToken': csrftoken } 
-                }); 
-                $.ajax({
-                    // url: '/upload', // Replace with your server endpoint
-                    url: '',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(data) {
-                        // Handle the response from the server
-                        console.log(data);
-                        // You can further process the response data here
-                    },
-                    error: function(error) {
-                        console.error('Error uploading audio file:', error);
-                    }
-                });
-            }
-
-
             const startButton = document.getElementById('startButton');
             let mediaRecorder;
             let isRecording = false;
@@ -160,9 +121,7 @@
                     mediaRecorder = new MediaRecorder(stream, {
                         mimeType: 'audio/webm',
                     });
-                    let socket;
-                    // socket = new WebSocket('ws://localhost:8000/listen'); // descomentar para pruebas locales
-                    socket = new WebSocket('wss://emergencia-hackmx.azurewebsites.net/listen');  // comentar para pruebas locales
+                    var socket = new WebSocket('ws://localhost:8000/listen');
                     socket.onopen = () => {
                         inicio = Date.now();
                         document.querySelector('#status').textContent = 'Grabando...';

@@ -17,31 +17,12 @@ openai.api_key = config("OPENAI_API_KEY")
 DEEPGRAM_API_KEY = config("DEEPGRAM_API_KEY")
 deepgram = Deepgram(DEEPGRAM_API_KEY)
 
-# def home(request):
-#     if request.method == 'POST': 
-#         fullMessage = request.POST.get('fullMessage') 
-#         audioFormData = request.POST.get('fullMessage') 
-#         response = get_completion(fullMessage) 
-#         return JsonResponse({'response': response})
-#     return render(request, "home.html")
-
 def home(request):
-    if request.method == 'POST':
-        fullMessage = request.POST.get('fullMessage')
-        audioFile = request.FILES.get('audioFile')
-
-        if audioFile:
-            print(audioFile)
-            response = process_audio(audioFile)
-            
-        elif fullMessage:
-            response = get_completion(fullMessage)  # Example: Call your text processing API
-            
-        else:
-            return JsonResponse({'error': 'Invalid POST data'})
-        
+    if request.method == 'POST': 
+        fullMessage = request.POST.get('fullMessage') 
+        audioFormData = request.POST.get('fullMessage') 
+        response = get_completion(fullMessage) 
         return JsonResponse({'response': response})
-        
     return render(request, "home.html")
 
 
