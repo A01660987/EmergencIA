@@ -108,7 +108,7 @@
                         if (received) {
                             document.querySelector('#transcript').textContent += ' ' + received;
                             fullMessage += received;
-                            if (Math.floor(inicio / 1000) + 10 < Math.floor(Date.now() / 1000)) {
+                            if (Math.floor(inicio / 1000) + 5 < Math.floor(Date.now() / 1000)) {
                                 inicio = Date.now();
                                 
                                 var csrf_token = Cookies.get('csrftoken');
@@ -122,13 +122,13 @@
                                     dataType:'json',
                                     success:function(data) {
                                         var dataJson = JSON.parse(data.response)
-                                        $('#servicios').append('<p>' + dataJson["servicios_a_enviar"] + '</p>'); 
-                                        $('#nombre').append('<p>' + dataJson["nombre"] + '</p>'); 
-                                        $('#telefono').append('<p>' + dataJson["telefono"] + '</p>'); 
-                                        $('#ubicacion').append('<p>' + dataJson["ubicacion"] + '</p>'); 
-                                        $('#tiempo_de_servicio').append('<p>' + Date.now() + '</p>'); 
-                                        $('#razones').append('<p>' + dataJson["razones_de_emergencia"] + '</p>');
-                                        // $('#servicios').append('<p>('+ time + ') <i class="bi bi-robot"></i>: ' + data.response["servicios_a_enviar"] + '</p>'); 
+                                        $('#servicios').text('<p>' + dataJson["servicios_a_enviar"] + '</p>'); 
+                                        $('#nombre').text('<p>' + dataJson["nombre"] + '</p>'); 
+                                        $('#telefono').text('<p>' + dataJson["telefono"] + '</p>'); 
+                                        $('#ubicacion').text('<p>' + dataJson["ubicacion"] + '</p>'); 
+                                        $('#tiempo_de_servicio').text('<p>' + Date.now() + '</p>'); 
+                                        $('#razones').text('<p>' + dataJson["razones_de_emergencia"] + '</p>');
+                                        // $('#servicios').text('<p>('+ time + ') <i class="bi bi-robot"></i>: ' + data.response["servicios_a_enviar"] + '</p>'); 
                                     }
                                 })
                             }
