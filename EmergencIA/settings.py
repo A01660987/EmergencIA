@@ -26,8 +26,18 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    "emergencia-hackmx.azurewebsites.net",
+    "127.0.0.1",
+    "localhost",
+    ]
+CSRF_TRUSTED_ORIGINS = [
+    "http://emergencia-hackmx.azurewebsites.net",
+    "https://emergencia-hackmx.azurewebsites.net",
+    "http://127.0.0.1",
+    "https://127.0.0.1",
+    "http://localhost",
+]
 
 # Application definition
 
@@ -108,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Mexico_City'
 
 USE_I18N = True
 
@@ -119,6 +129,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "static"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

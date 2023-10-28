@@ -128,9 +128,13 @@
                     mediaRecorder = new MediaRecorder(stream, {
                         mimeType: 'audio/webm',
                     });
-
-                    const socket = new WebSocket('ws://localhost:8000/listen');
-
+                    let socket;
+                    try {
+                        socket = new WebSocket('ws://localhost:8000/listen');
+                        console.log(socket)
+                    } catch (error) {
+                        socket = new WebSocket('ws://emergencia-hackmx.azurewebsites.net/listen');
+                    }
                     socket.onopen = () => {
                         inicio = Date.now();
                         document.querySelector('#status').textContent = 'Grabando...';
@@ -149,6 +153,7 @@
                             
                             document.querySelector('#transcript').textContent += ' ' + received;
                             fullMessage += received;
+                            $('#tiempo_de_servicio').text(Date(Date.now()).toString());
                             if (Math.floor(inicio / 1000) + 5 < Math.floor(Date.now() / 1000)) {
                                 inicio = Date.now();
                                 
@@ -162,17 +167,13 @@
                                     data:{fullMessage: fullMessage},
                                     dataType:'json',
                                     success:function(data) {
-                                        dataJson = JSON.parse(data.response)
-
-                                        keywords = extractValuesFromJson(dataJson)
-
-                                        $('#servicios').append('<p>' + getSingleValue(dataJson["servicios_a_enviar"]) + '</p>');
-                                        $('#nombre').append('<p>' + getSingleValue(dataJson["nombre"]) + '</p>');
-                                        $('#telefono').append('<p>' + getSingleValue(dataJson["telefono"]) + '</p>');
-                                        $('#ubicacion').append('<p>' + getSingleValue(dataJson["ubicacion"]) + '</p>');
-                                        $('#tiempo_de_servicio').append('<p>' + Date.now() + '</p>');
-                                        $('#razones').append('<p>' + getSingleValue(dataJson["razones_de_emergencia"]) + '</p>');
-                                        // $('#servicios').append('<p>('+ time + ') <i class="bi bi-robot"></i>: ' + data.response["servicios_a_enviar"] + '</p>'); 
+                                        var dataJson = JSON.parse(data.response)
+                                        $('#servicios').text(dataJson["servicios_a_enviar"]); 
+                                        $('#nombre').text(dataJson["nombre"]); 
+                                        $('#telefono').text(dataJson["telefono"]); 
+                                        $('#ubicacion').text(dataJson["ubicacion"]); 
+                                        $('#razones').text(dataJson["razones_de_emergencia"]);
+                                        // $('#servicios').text(time <i class="bi bi-robot"></i>: ' + data.response["servicios_a_enviar"]); 
                                     }
                                 })
                             }

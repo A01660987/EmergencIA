@@ -5,7 +5,7 @@ import asyncio
 import aiohttp
 
 # Your Deepgram API Key
-DEEPGRAM_API_KEY = '20d03e6fa9f29ae4dc7c46a98754d49418839504'
+DEEPGRAM_API_KEY = config("DEEPGRAM_API_KEY")
 
 # URL for the realtime streaming audio you would like to transcribe
 URL = 'http://stream.live.vc.bbcmedia.co.uk/bbc_world_service'
