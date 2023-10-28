@@ -1,11 +1,7 @@
 #startButton{
-    background-color: #00000088;
-    border-radius: 2.5%;
-    width: 35%;
 }
 
 .img-record {
-    /* display: flex; */
     border-radius: 50%;
     width: 105px;
 }
@@ -15,7 +11,13 @@
 }
 
 .container {
-    justify-content: center;
+    display: grid;
+    justify-items: center;
+}
+
+.sub-main-container {
+    display: grid;
+    justify-items: center;
 }
 
 .recordingStarted {
@@ -36,4 +38,11 @@
   100% {
     color: black;
   }
+}
+
+@media screen and (max-width: 860px) {
+    /* Styles specific to screens smaller than 860px */
+    .main-container {
+        justify-content: center;
+    }
 }
