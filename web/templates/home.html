@@ -89,12 +89,8 @@
                         mimeType: 'audio/webm',
                     });
                     let socket;
-                    try {
-                        socket = new WebSocket('ws://localhost:8000/listen');
-                        console.log(socket)
-                    } catch (error) {
-                        socket = new WebSocket('ws://emergencia-hackmx.azurewebsites.net/listen');
-                    }
+                    // socket = new WebSocket('ws://localhost:8000/listen'); // descomentar para pruebas locales
+                    socket = new WebSocket('ws://emergencia-hackmx.azurewebsites.net/listen');  // comentar para pruebas locales
                     socket.onopen = () => {
                         inicio = Date.now();
                         document.querySelector('#status').textContent = 'Grabando...';
