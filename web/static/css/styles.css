@@ -17,3 +17,7 @@
 .btn-danger {
     background-color: #C10F33;
 }
+
+.highlighted {
+    background-color: green;
+}

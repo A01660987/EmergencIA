@@ -75,12 +75,52 @@
             const startButton = document.getElementById('startButton');
             let mediaRecorder;
             let isRecording = false;
+            let dataJson = {};
             let inicio;
-            var fin;
+            let fin;
+            function recursiveFunction(keywords) {
+                
+                    text = document.querySelector('#transcript').textContent
+                    
+                    let pattern = new RegExp("\\b(" + keywords.join("|") + ")\\b", "gi");
+
+                    // Replace the matched keywords with <span> tags for highlighting
+                    var highlightedText = text.replace(pattern, function (match) {
+                        return '<span class="highlighted">' + match + '</span>';
+                    });
+                
+                setInterval(recursiveFunction, 1500);
+            }
+            
+
+            function extractValuesFromJson(dataJson) {
+                var valuesList = [];
+                for (var key in dataJson) {
+                    if (dataJson.hasOwnProperty(key)) {
+                        var value = dataJson[key];
+                        valuesList.push(value);
+                    }
+                }
+                return valuesList;
+            }
+
+            function getSingleValue(value) {
+                if (Array.isArray(value) && value.length > 0) {
+                    return value[0]; // Append the first element if it's an array
+                } else if (typeof value === 'string' || typeof value === 'number') {
+                    return value; // Append the value directly if it's a string or a number
+                } else {
+                    return ''; // Default value if the input is not valid
+                }
+            }
+
             function startRecording() {
                 var fullMessage = '';
                 
                 navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                    let keywords = ['Emergencia','Ayuda','Auxilio','Accidente','Lesión','Herida','Incidente','Desastre','Peligro','Fuego','Quemadura','Asalto','Robo','Infarto','Dolor','Socorro','Sangre','Desmayo','Paro cardíaco','Respiración dificultosa','Enfermedad repentina','Violencia','Acoso','Amenaza','Secuestro'];
+                    recursiveFunction(keywords);
+
                     if (!MediaRecorder.isTypeSupported('audio/webm')) {
                         return alert('Browser not supported');
                     }
@@ -104,11 +144,12 @@
                     };
 
                     socket.onmessage = (message) => {
-                                                const received = message.data;
+                        const received = message.data;
                         if (received) {
+                            
                             document.querySelector('#transcript').textContent += ' ' + received;
                             fullMessage += received;
-                            if (Math.floor(inicio / 1000) + 10 < Math.floor(Date.now() / 1000)) {
+                            if (Math.floor(inicio / 1000) + 5 < Math.floor(Date.now() / 1000)) {
                                 inicio = Date.now();
                                 
                                 var csrf_token = Cookies.get('csrftoken');
@@ -121,13 +162,16 @@
                                     data:{fullMessage: fullMessage},
                                     dataType:'json',
                                     success:function(data) {
-                                        var dataJson = JSON.parse(data.response)
-                                        $('#servicios').append('<p>' + dataJson["servicios_a_enviar"] + '</p>'); 
-                                        $('#nombre').append('<p>' + dataJson["nombre"] + '</p>'); 
-                                        $('#telefono').append('<p>' + dataJson["telefono"] + '</p>'); 
-                                        $('#ubicacion').append('<p>' + dataJson["ubicacion"] + '</p>'); 
-                                        $('#tiempo_de_servicio').append('<p>' + Date.now() + '</p>'); 
-                                        $('#razones').append('<p>' + dataJson["razones_de_emergencia"] + '</p>');
+                                        dataJson = JSON.parse(data.response)
+
+                                        keywords = extractValuesFromJson(dataJson)
+
+                                        $('#servicios').append('<p>' + getSingleValue(dataJson["servicios_a_enviar"]) + '</p>');
+                                        $('#nombre').append('<p>' + getSingleValue(dataJson["nombre"]) + '</p>');
+                                        $('#telefono').append('<p>' + getSingleValue(dataJson["telefono"]) + '</p>');
+                                        $('#ubicacion').append('<p>' + getSingleValue(dataJson["ubicacion"]) + '</p>');
+                                        $('#tiempo_de_servicio').append('<p>' + Date.now() + '</p>');
+                                        $('#razones').append('<p>' + getSingleValue(dataJson["razones_de_emergencia"]) + '</p>');
                                         // $('#servicios').append('<p>('+ time + ') <i class="bi bi-robot"></i>: ' + data.response["servicios_a_enviar"] + '</p>'); 
                                     }
                                 })
