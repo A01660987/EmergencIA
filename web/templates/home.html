@@ -67,8 +67,11 @@
             const startButton = document.getElementById('startButton');
             let mediaRecorder;
             let isRecording = false;
-
+            let inicio;
+            var fin;
             function startRecording() {
+                var fullMessage = '';
+                
                 navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
                     if (!MediaRecorder.isTypeSupported('audio/webm')) {
                         return alert('Browser not supported');
@@ -81,6 +84,7 @@
                     const socket = new WebSocket('ws://localhost:8000/listen');
 
                     socket.onopen = () => {
+                        inicio = Date.now();
                         document.querySelector('#status').textContent = 'Grabando...';
                         console.log({ event: 'onopen' });
                         mediaRecorder.addEventListener('dataavailable', async (event) => {
@@ -94,8 +98,12 @@
                     socket.onmessage = (message) => {
                         const received = message.data;
                         if (received) {
-                            console.log(received);
                             document.querySelector('#transcript').textContent += ' ' + received;
+                            fullMessage += received;
+                            if (Math.floor(inicio / 1000) + 10 < Math.floor(Date.now() / 1000)) {
+                                inicio = Date.now();
+                                get_completion(fullMessage);
+                            }
                         }
                     };
 

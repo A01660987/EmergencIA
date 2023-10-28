@@ -36,18 +36,17 @@ def process_audio(request):
 
 def get_completion(prompt): 
 	print(prompt) 
-	query = openai.Completion.create( 
-		engine="text-davinci-003", 
-		prompt=prompt, 
-		max_tokens=1024, 
-		n=1, 
-		stop=None, 
-		temperature=0.5, 
-	)
-
-	response = query.choices[0].text 
-	print(response) 
-	return response 
+	response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "user", "content": "El próximo mensaje será un ejemplo de una posible llamada a servicios de emergencia. Necesito que me contestes en formato de un json extrayendo la información más pertinente en este caso. La información que debes de extraer será el nombre de la persona que llama, su número telefónico, su ubicación, las razones por las que está teniendo una emergencia, y el o los servicios de emergencia que sea má prudente enviar. Si no tienes uno o más de los datos, el campo deberá ser null. Las opciones de servicio de emergencia serán: \"Ambulancia\", \"Policía\" o \"Bomberos\". El formato del json debe de ser el siguiente: {\"nombre\", \"telefono\", \"ubicacion\", \"razones_de_emergencia\", \"servicios_a_enviar\"}"},
+        {"role": "user", "content": prompt},
+        # {"role": "user", "content": "El próximo mensaje será un ejemplo de una posible llamada a servicios de emergencia. Necesito que me provees los índices de las palabras claves que consideres más importantes en este caso, con formato de arreglo."},
+        # {"role": "user", "content": prompt},
+    ]
+)
+	response = response.choices[0].message.content  
+	return response
 
 
 def query_view(request): 
