@@ -26,8 +26,15 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["emergencia-hackmx.azurewebsites.net"]
-
+ALLOWED_HOSTS = [
+    "emergencia-hackmx.azurewebsites.net"
+    ]
+CSRF_TRUSTED_ORIGINS = [
+    "http://emergencia-hackmx.azurewebsites.net",
+    "https://emergencia-hackmx.azurewebsites.net",
+    "http://127.0.0.1",
+    "https://127.0.0.1",
+]
 
 # Application definition
 
@@ -108,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Mexico_City'
 
 USE_I18N = True
 
