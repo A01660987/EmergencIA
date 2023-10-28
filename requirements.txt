@@ -13,3 +13,4 @@ tqdm
 langchain
 wget
 ajax
+asyncio

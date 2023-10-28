@@ -9,34 +9,63 @@ from dotenv import load_dotenv
 from typing import Dict
 import json
 from decouple import config
+from deepgram import Deepgram
+import asyncio, json
 
 load_dotenv()
 openai.api_key = config("OPENAI_API_KEY")
+DEEPGRAM_API_KEY = config("DEEPGRAM_API_KEY")
+deepgram = Deepgram(DEEPGRAM_API_KEY)
 
+# def home(request):
+#     if request.method == 'POST': 
+#         fullMessage = request.POST.get('fullMessage') 
+#         audioFormData = request.POST.get('fullMessage') 
+#         response = get_completion(fullMessage) 
+#         return JsonResponse({'response': response})
+#     return render(request, "home.html")
 
 def home(request):
+    if request.method == 'POST':
+        fullMessage = request.POST.get('fullMessage')
+        audioFile = request.FILES.get('audioFile')
+
+        if audioFile:
+            print(audioFile)
+            response = process_audio(audioFile)
+            
+        elif fullMessage:
+            response = get_completion(fullMessage)  # Example: Call your text processing API
+            
+        else:
+            return JsonResponse({'error': 'Invalid POST data'})
+        
+        return JsonResponse({'response': response})
+        
+    return render(request, "home.html")
+
+
+def record(request):
     if request.method == 'POST': 
         fullMessage = request.POST.get('fullMessage') 
         response = get_completion(fullMessage) 
         return JsonResponse({'response': response})
-    return render(request, "home.html")
-
-def record(request):
+    
     return render(request, "record.html")
 
-@csrf_exempt
-def process_audio(request):
-    uploaded_file = request.FILES['audio_file']
-    # Save the uploaded file temporarily
-    with open('temp_audio.wav', 'wb') as destination:
-        for chunk in uploaded_file.chunks():
-            destination.write(chunk)
-    # Call your Python function to process the audio file (deepgram_test.main())
-    processed_results = call_python_function('temp_audio.wav')
-    # Delete the temporary file
-    os.remove('temp_audio.wav')
-    # Return the processed results as JSON
-    return JsonResponse(processed_results)
+# @csrf_exempt
+# def process_audio(request):
+#     uploaded_file = request.FILES['audio_file']
+#     # Save the uploaded file temporarily
+#     with open('temp_audio.wav', 'wb') as destination:
+#         for chunk in uploaded_file.chunks():
+#             destination.write(chunk)
+#     # Call your Python function to process the audio file (deepgram_test.main())
+#     processed_results = call_python_function('temp_audio.wav')
+#     # Delete the temporary file
+#     os.remove('temp_audio.wav')
+#     # Return the processed results as JSON
+#     return JsonResponse(processed_results)
 
 @csrf_exempt
 def get_completion(prompt): 
@@ -59,4 +88,29 @@ def query_view(request):
 		response = get_completion(prompt) 
 		return JsonResponse({'response': response})
 	return render(request, 'index.html')
+
+@csrf_exempt
+async def process_audio(audioFile):
+    audio = open(audioFile, 'rb')
+    source = {
+        'buffer': audio,
+        'mimetype': 'audio/wav'
+    }
+
+    # Send the audio to Deepgram and get the response
+    response = await asyncio.create_task(
+         deepgram.transcription.prerecorded(
+        source,
+        {
+            'punctuate': True,
+            'interim_results': False,
+            'smart_format': True,
+            'language': 'es',
+            'model': 'nova',
+        }
+        )
+    )
+
+    # Write the response to the console
+    print(json.dumps(response, indent=4))
 

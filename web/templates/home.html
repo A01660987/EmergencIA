@@ -54,9 +54,11 @@
                 </div>
                 <form id="audio-upload">
                     <div class="mb-3">
-                        <label for="formFile" class="form-label">Carga un archivo de audio (.mp3, .wav)</label>
-                        <input class="form-control mb-3" type="file" id="formFile" accept=".mp3,.wav">
-                        <button type="submit" class="btn btn-danger mb-3" style="border:none">Cargar</button>
+                        <form id="audioForm">
+                            <label for="formFile" class="form-label">Carga un archivo de audio (.mp3, .wav)</label>
+                            <input class="form-control mb-3" type="file" id="formFile" accept=".mp3,.wav">
+                            <button type="submit" class="btn btn-danger mb-3" style="border:none" onsubmit="uploadAudioFile()">Cargar</button>
+                        </form>
                     </div>
                 </form>
             </div>
@@ -72,6 +74,36 @@
             
         <!-- JAVASCRIPT FILES -->
         <script>
+            function uploadAudioFile() {
+                const fileInput = document.getElementById('formFile');
+                const formData = new FormData();
+                formData.append('audioFile', fileInput.files[0]);
+                
+                var csrftoken = Cookies.get('csrftoken');
+                
+                // set the CSRF token in the AJAX headers 
+                $.ajaxSetup({ 
+                    headers: { 'X-CSRFToken': csrftoken } 
+                }); 
+                $.ajax({
+                    // url: '/upload', // Replace with your server endpoint
+                    url: '',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        // Handle the response from the server
+                        console.log(data);
+                        // You can further process the response data here
+                    },
+                    error: function(error) {
+                        console.error('Error uploading audio file:', error);
+                    }
+                });
+            }
+
+
             const startButton = document.getElementById('startButton');
             let mediaRecorder;
             let isRecording = false;
@@ -118,8 +150,8 @@
                 var fullMessage = '';
                 
                 navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-                    let keywords = ['Emergencia','Ayuda','Auxilio','Accidente','Lesión','Herida','Incidente','Desastre','Peligro','Fuego','Quemadura','Asalto','Robo','Infarto','Dolor','Socorro','Sangre','Desmayo','Paro cardíaco','Respiración dificultosa','Enfermedad repentina','Violencia','Acoso','Amenaza','Secuestro'];
-                    recursiveFunction(keywords);
+                    // let keywords = ['Emergencia','Ayuda','Auxilio','Accidente','Lesión','Herida','Incidente','Desastre','Peligro','Fuego','Quemadura','Asalto','Robo','Infarto','Dolor','Socorro','Sangre','Desmayo','Paro cardíaco','Respiración dificultosa','Enfermedad repentina','Violencia','Acoso','Amenaza','Secuestro'];
+                    // recursiveFunction(keywords);
 
                     if (!MediaRecorder.isTypeSupported('audio/webm')) {
                         return alert('Browser not supported');
@@ -129,12 +161,10 @@
                         mimeType: 'audio/webm',
                     });
                     let socket;
-                    try {
-                        socket = new WebSocket('ws://localhost:8000/listen');
-                        console.log(socket)
-                    } catch (error) {
-                        socket = new WebSocket('ws://emergencia-hackmx.azurewebsites.net/listen');
-                    }
+
+                    socket = new WebSocket('ws://localhost:8000/listen');                        
+                    // socket = new WebSocket('ws://emergencia-hackmx.azurewebsites.net/listen');
+                    
                     socket.onopen = () => {
                         inicio = Date.now();
                         document.querySelector('#status').textContent = 'Grabando...';
