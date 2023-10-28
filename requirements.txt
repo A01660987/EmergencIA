@@ -9,7 +9,6 @@ channels==3.0.4
 openai
 pinecone-client
 pandas
-typing
 tqdm
 langchain
 wget
