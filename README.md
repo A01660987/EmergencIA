@@ -1,6 +1,8 @@
-# EmergencIA
+<p align="center">
+  <img height="100" src="/web/static/png/logo_red.png">
+</p>
 
-## PARA EJECUTARLO CORRER:
+#### PARA EJECUTARLO CORRER:
 ```python manage.py runserver```
 
 Reto para Thales, HackMx5
