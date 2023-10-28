@@ -4,5 +4,5 @@ deepgram-sdk
 python-decouple
 aiohttp
 python-dotenv
-channels
 deepgram-sdk
+channels==3.0.4

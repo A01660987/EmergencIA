@@ -29,8 +29,6 @@
         <div class="row mt-4 mx-4">
             <div class="col-7 p-4 bg-white rounded">
                 <p id="status">Connection status:</p>
-                <button id="startRecording">Start Recording</button>
-                <button id="stopRecording" disabled>Stop Recording</button>
                 <p class="fs-6 mb-0 fw-bold">
                   TRANSCRIPCIÓN
                 </p>
@@ -43,47 +41,46 @@
             </div>
         <!-- JAVASCRIPT FILES -->
         <script>
-            const socket = new WebSocket('ws://localhost:8000/listen')
-        </script>
-        <script>
             navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-                const mediaRecorder = new MediaRecorder(stream)
-            })
-
-            socket.onopen = () => {
-                document.querySelector('#status').textContent = 'Connected'
-                console.log({
-                    event: 'onopen'
-                })
-                mediaRecorder.addEventListener('dataavailable', async (event) => {
-                    if (event.data.size > 0 && socket.readyState == 1) {
-                        socket.send(event.data)
-                    }
-                })
-                mediaRecorder.start(250)
+             if (!MediaRecorder.isTypeSupported('audio/webm'))
+                 return alert('Browser not supported')
+ 
+             const mediaRecorder = new MediaRecorder(stream, {
+                 mimeType: 'audio/webm',
+             })
+ 
+             const socket = new WebSocket('ws://localhost:8000/listen')
+ 
+             socket.onopen = () => {
+                 document.querySelector('#status').textContent = 'Connected'
+                 console.log({ event: 'onopen' })
+                 mediaRecorder.addEventListener('dataavailable', async (event) => {
+                     if (event.data.size > 0 && socket.readyState == 1) {
+                         socket.send(event.data)
+                     }
+             })
+             mediaRecorder.start(250)
+             }
+ 
+             socket.onmessage = (message) => {
+                 const received = message.data
+                 if (received) {
+                     console.log(received)
+                     document.querySelector('#transcript').textContent += ' ' + received
+                 }
             }
-        
-            socket.onmessage = (message) => {
-                const received = message.data
-                if (received) {
-                    console.log(received)
-                    document.querySelector('#transcript').textContent += ' ' + received
-                }
-            }
-        
+ 
             socket.onclose = () => {
-                console.log({
-                    event: 'onclose'
-                })
-            }
-        
-            socket.onerror = (error) => {
-                console.log({
-                    event: 'onerror',
-                    error
-                })
-            }
-    </script>
+             console.log({ event: 'onclose' })
+         }
+ 
+             socket.onerror = (error) => {
+                 console.log({ event: 'onerror', error })
+             }
+ 
+            })
+ 
+         </script>
     <!-- <script>
         navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
             const mediaRecorder = new MediaRecorder(stream)
