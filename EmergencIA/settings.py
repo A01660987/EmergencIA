@@ -27,13 +27,16 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "emergencia-hackmx.azurewebsites.net"
+    "emergencia-hackmx.azurewebsites.net",
+    "127.0.0.1",
+    "localhost",
     ]
 CSRF_TRUSTED_ORIGINS = [
     "http://emergencia-hackmx.azurewebsites.net",
     "https://emergencia-hackmx.azurewebsites.net",
     "http://127.0.0.1",
     "https://127.0.0.1",
+    "http://localhost",
 ]
 
 # Application definition

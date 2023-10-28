@@ -88,11 +88,12 @@
                     mediaRecorder = new MediaRecorder(stream, {
                         mimeType: 'audio/webm',
                     });
-
+                    let socket;
                     try {
-                        const socket = new WebSocket('ws://localhost:8000/listen');
+                        socket = new WebSocket('ws://localhost:8000/listen');
+                        console.log(socket)
                     } catch (error) {
-                        const socket = new WebSocket('ws://emergencia-hackmx.azurewebsites.net/listen');
+                        socket = new WebSocket('ws://emergencia-hackmx.azurewebsites.net/listen');
                     }
                     socket.onopen = () => {
                         inicio = Date.now();
