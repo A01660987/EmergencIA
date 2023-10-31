@@ -1,5 +1,5 @@
 <p align="center">
-  <img height="100" src="/web/static/png/logo_red.png">
+  <img width="750px" src="/web/static/png/logo_red.png" alt="EmergencIA">
 </p>
 
 ## Reto para la empresa Thales
